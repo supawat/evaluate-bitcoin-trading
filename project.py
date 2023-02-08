@@ -9,37 +9,28 @@ import json
 
 exchangerates_apikey = "qq9sWpAg0lQ2dSklTGmIZeX9Q3zZ3xZZ"
 
-def exchangerates_data(apikey, symbols, base):
+def main():
 
-    # https://apilayer.com/
-    # url = "https://api.apilayer.com/exchangerates_data/latest?symbols=THB&base=USD"
+    print("\n----- Evaluate Bitcoin Trading -----\n")
 
-    url = "https://api.apilayer.com/exchangerates_data/latest?symbols="+symbols+"&base="+base
+    run_program = True
 
-    payload = {}
+    while run_program:
 
-    headers = {
-        "apikey": apikey
-    }
+        coin_operrate = input("Current price [C], SELL [S], BUY [B], Exit [Q] : ")
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+        if coin_operrate.lower() == 'c':
+            current_price()
 
-    status_code = response.status_code
+        elif coin_operrate.lower() == 's':
+            sell_bitcoin()
 
-    result = response.text
+        elif coin_operrate.lower() == 'b':
+            buy_bitcoin()
 
-    result_dict = json.loads(result)
+        elif coin_operrate.lower() == 'q':
+            run_program = False
 
-    return result_dict["rates"]["THB"]
-
-def get_bitcoin_price():
-
-    r = requests.get('https://api.coindesk.com/v1/bpi/currentprice.json')
-    data = r.json()
-
-    rate_float = data["bpi"]["USD"]["rate_float"]
-
-    return rate_float
 
 def current_price():
 
@@ -52,63 +43,6 @@ def current_price():
     print("Bitcoin USD Price : " + "{:,}".format(usd_rate))
     print("Bitcoin THB Price : " + "{:,}".format(thb_rate*usd_rate) + "\n")
 
-    # print("Bitcoin USD Price : " + usd_currency.get_money_with_currency_format(usd_rate))
-    # print("Bitcoin THB Price : " + thb_currency.get_money_with_currency_format(thb_rate*usd_rate) + "\n")
-
-
-def inputBitcoinAmount(message):
-    while True:
-        try:
-            userInput = float(input(message))
-        except ValueError:
-            continue
-
-        else:
-            if userInput > 0:
-                return userInput
-            else:
-                continue
-
-def inputFeeExchangeRate(message):
-    while True:
-        try:
-            userInput = float(input(message))
-        except ValueError:
-            #print("Not an float! Try again.")
-            continue
-
-        else:
-            if userInput >= 0 and userInput <= 100:
-                return userInput
-            else:
-                continue
-
-def inputCurrency(message):
-    while True:
-        try:
-            userInput = input(message)
-        except ValueError:
-            #print("Not an float! Try again.")
-            continue
-
-        else:
-            if userInput.lower() == 't' or userInput.lower() == 'u':
-                return userInput
-            else:
-                continue
-
-def inputFloatNumber(message):
-    while True:
-        try:
-            userInput = float(input(message))
-        except ValueError:
-            continue
-
-        else:
-            if userInput > 0:
-                return userInput
-            else:
-                continue
 
 def sell_bitcoin():
     print("\n----- Sell Bitcoin -----\n")
@@ -125,6 +59,7 @@ def sell_bitcoin():
     print("USD fee : " + "{:,}".format(fee_amount))
     print("You will get THB amount : " + "{:,}".format(thb_rate*usd_amount_deduct_fee))
     print("THB fee : " + "{:,}".format(thb_rate*fee_amount)+ "\n")
+
 
 def buy_bitcoin():
 
@@ -162,27 +97,95 @@ def buy_bitcoin():
         print("\nYou will get BTC amount : " + "{:,}".format(bitcoin_amount_deduct_fee))
         print("BTC fee : " + "{:,}".format(fee_amount) + "\n")
 
-def main():
 
-    print("\n----- Evaluate Bitcoin Trading -----\n")
+def exchangerates_data(apikey, symbols, base):
 
-    run_program = True
+    # https://apilayer.com/
+    # url = "https://api.apilayer.com/exchangerates_data/latest?symbols=THB&base=USD"
 
-    while run_program:
+    url = "https://api.apilayer.com/exchangerates_data/latest?symbols="+symbols+"&base="+base
 
-        coin_operrate = input("Current price [C], SELL [S], BUY [B], Exit [Q] : ")
+    payload = {}
 
-        if coin_operrate.lower() == 'c':
-            current_price()
+    headers = {
+        "apikey": apikey
+    }
 
-        elif coin_operrate.lower() == 's':
-            sell_bitcoin()
+    response = requests.request("GET", url, headers=headers, data=payload)
 
-        elif coin_operrate.lower() == 'b':
-            buy_bitcoin()
+    status_code = response.status_code
 
-        elif coin_operrate.lower() == 'q':
-            run_program = False
+    result = response.text
+
+    result_dict = json.loads(result)
+
+    return result_dict["rates"]["THB"]
+
+
+def get_bitcoin_price():
+
+    r = requests.get('https://api.coindesk.com/v1/bpi/currentprice.json')
+    data = r.json()
+
+    rate_float = data["bpi"]["USD"]["rate_float"]
+
+    return rate_float
+
+
+def inputBitcoinAmount(message):
+    while True:
+        try:
+            userInput = float(input(message))
+        except ValueError:
+            continue
+
+        else:
+            if userInput > 0:
+                return userInput
+            else:
+                continue
+
+
+def inputFeeExchangeRate(message):
+    while True:
+        try:
+            userInput = float(input(message))
+        except ValueError:
+            continue
+
+        else:
+            if userInput >= 0 and userInput <= 100:
+                return userInput
+            else:
+                continue
+
+
+def inputCurrency(message):
+    while True:
+        try:
+            userInput = input(message)
+        except ValueError:
+            continue
+
+        else:
+            if userInput.lower() == 't' or userInput.lower() == 'u':
+                return userInput
+            else:
+                continue
+
+
+def inputFloatNumber(message):
+    while True:
+        try:
+            userInput = float(input(message))
+        except ValueError:
+            continue
+
+        else:
+            if userInput > 0:
+                return userInput
+            else:
+                continue
 
 if __name__ == "__main__":
     main()
